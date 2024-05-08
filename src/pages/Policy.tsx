@@ -1,4 +1,4 @@
-export const Policy = () => {
+export default function Policy() {
     return(
         <div>
         <h2>dolp!n 개인정보 처리방침</h2>
