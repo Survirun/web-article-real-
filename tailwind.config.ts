@@ -1,5 +1,18 @@
 import type { Config } from "tailwindcss";
 
+const GRAY = {
+  100: '#FFFFFF',
+  200: '#FAFAFC',
+  300: '#EEEEF0',
+  400: '#DCDCEA',
+  500: '#BEBEC8',
+  600: '#A0A0AB',
+  700: '#84848F',
+  800: '#686874',
+  900: '#3F3F46',
+  1000: '#18171D',
+}
+
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -7,14 +20,52 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+    colors: {
+      white: "#ffffff",
+      black: "#000000",
+      gray: {
+        ...GRAY
       },
+      main: {
+        primary: `${GRAY[900]}`,
+        light: `${GRAY[700]}`,
+        dark: `${GRAY[1000]}`
+      }
+    },
+    fontFamily: {
+
+    },
+    spacing: {
+      headerH: '3.75rem',
+      contentW: '60rem'
+    },
+    extend: {
+      
     },
   },
-  plugins: [],
+  plugins: [
+    ({ addUtilities, addComponents, theme }: any) => {
+      addUtilities({
+        ".bg-transparent": {
+          "background-color": "transparent"
+        },
+        ".scrollbar-none": {
+          "-ms-overflow-style": "none",
+          "scrollbar-width": "none",
+        }
+      });
+      addComponents({
+        ".img": {
+          width: '14.25rem',
+          height: '8rem',
+          borderRadius: '0.5rem',
+          backgroundColor: theme('colors.gray[300]'),
+          objectFit: 'cover',
+          flexShrink: 0,
+        }
+      })
+    },
+  ],
 };
+
 export default config;

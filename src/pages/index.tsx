@@ -1,118 +1,245 @@
+"use client";
+
+import { getArticle } from "@/apis/api/article";
+import { getArticleList } from "@/apis/services/article";
+import { Header, IconButton, Typo } from "@/components";
+import ChannelTalk from "@/third-party/ChannelTalk";
+import Spline from "@splinetool/react-spline";
+import clsx from "clsx/lite";
+import React, { Suspense } from "react";
+import { ErrorBoundary, FallbackProps } from "react-error-boundary";
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  useQuery,
+} from "@tanstack/react-query";
 import Image from "next/image";
-import { Inter } from "next/font/google";
+import axios from "axios";
 
-const inter = Inter({ subsets: ["latin"] });
+const PAGE = 20;
 
-export default function Home() {
+const IntroComponent = () => {
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/pages/index.tsx</code>
+    <div className="flex justify-between items-center flex-shrink-0 p-[0rem_15rem_3.75rem_15rem] w-full h-[30rem] bg-black">
+      <div className="flex flex-col justify-center gap-[0.5rem]">
+        <h2 className="text-gray-100 text-5xl font-semibold leading-[4.5rem] w-[30rem]">
+          브랜딩을 반영한
+          <br />
+          두줄 짜리 문구
+        </h2>
+        <p className="text-gray-400 font-medium text-base">
+          여기는 한 3줄짜리면 괜찮을 것 같은데
+          <br />
+          어떻게 써야 할 지 모르곘으니까
+          <br />
+          일단 이렇게라도 채워두자
         </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      </div>
+      <Spline
+        className="flex-grow-0"
+        scene="https://prod.spline.design/cglIthZkeCGUDP56/scene.splinecode"
+      />
+    </div>
+  );
+};
+
+const KeyWardHeader = () => {
+  const [active, setActive] = React.useState(0);
+  const datas = [
+    { name: "전체", id: 0 },
+    { name: "내 관심사", id: 1 },
+    { name: "IT 소식 ", id: 2 },
+    { name: "Android", id: 3 },
+    { name: "Web", id: 4 },
+    { name: "BackEnd", id: 5 },
+    { name: "AI", id: 6 },
+    { name: "UI/UX ", id: 7 },
+    { name: "기획", id: 8 },
+  ];
+
+  const Button: React.FC<{
+    className: string;
+    children: React.ReactNode;
+    onClick: React.MouseEventHandler<HTMLButtonElement>;
+  }> = ({ className, children, onClick }) => {
+    return (
+      <button
+        onClick={onClick}
+        className={clsx(
+          className,
+          "flex text-gray-600 bg-transparent p-[0.75rem_0.5rem] m-[0.5rem_0.75rem] justify-center items-center font-medium text-base [&.active]:text-gray-1000 [&.active]:border-b-gray-1000 [&.active]:border-b-2"
+        )}
+      >
+        {children}
+      </button>
+    );
+  };
+
+  const listBoxRef = React.useRef<HTMLDivElement>(null);
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const div = listBoxRef.current;
+    if (!div) return;
+
+    let startX = e.pageX - div.offsetLeft;
+    let scrollLeft = div.scrollLeft;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault();
+      const x = e.pageX - div.offsetLeft;
+      const walk = (x - startX) * 1; // scroll-fast
+      div.scrollLeft = scrollLeft - walk;
+    };
+
+    div.addEventListener("mousemove", handleMouseMove);
+    div.addEventListener(
+      "mouseup",
+      () => {
+        div.removeEventListener("mousemove", handleMouseMove);
+      },
+      { once: true }
+    );
+  };
+
+  return (
+    <div
+      ref={listBoxRef}
+      onMouseDown={handleMouseDown}
+      className="w-full max-w-contentW overflow-x-scroll cursor-grab flex sticky top-headerH bg-white z-[9] scrollbar-none"
+    >
+      {datas.map((data, index) => (
+        <Button
+          className={index === active ? "active shrink-0" : "shrink-0"}
+          key={index}
+          onClick={() => setActive(index)}
+        >
+          {data?.name}
+        </Button>
+      ))}
+    </div>
+  );
+};
+
+interface ArticleProps {
+  title: string;
+  thumbnail: string;
+  link: string;
+}
+
+const ArticleComponent = ({ title, thumbnail, link }: ArticleProps) => {
+  const [mounted, setMounted] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const openInNewTab = (url: string) => {
+    const newWindow = window.open(url, "_blank", "noopener,noreferrer");
+    if (newWindow) newWindow.opener = null;
+  };
+
+  return (
+    mounted && (
+      <div className="flex flex-col items-start gap-[0.5rem] max-w-[14.25rem] cursor-pointer group/article">
+        <div className="flex flex-col content-center gap-[0.75rem] w-full">
+          <Image
+            width={228}
+            height={128}
+            alt={title}
+            src={thumbnail}
+            onClick={() => openInNewTab(link)}
+            className="img"
+          />
+        </div>
+        <div className="flex flex-row justify-center gap-[0.75rem] w-full h-full">
+          <Typo
+            // onClick={() => openInNewTab(link)}
+            className="overflow-hidden w-full leading-5 [wordWrap:break-word] [textOverflow:ellipsis] [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]"
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+            {title}
+          </Typo>
+          <div className="group-hover/article:flex hidden gap-[0.75rem] items-center">
+            <IconButton type="bookMark" />
+          </div>
         </div>
       </div>
+    )
+  );
+};
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+interface ArticleInterface {
+  snippet: string;
+  date: string;
+  thumbnail: string;
+  keywords: Array<string>;
+  displayLink: string;
+  sitename: string;
+  link: string;
+  title: string;
+  cx: number;
+  category: number;
+}
+
+const Article = () => {
+  const queryKey = "user";
+  const queryFN = async () =>
+    await getArticle(0, 1).then((res) =>
+      getArticleList(res?.data)
+    );
+
+    const fetchArticles = async () => {
+      const response = await axios.post(
+        `/article/0?page=1`,
+      );
+      return response.data;
+    };
+
+  const { data } = useQuery<Array<ArticleInterface>>({ queryKey: [queryKey], queryFn: queryFN });
+
+  const ErrorPage = ({ error, resetErrorBoundary }: FallbackProps) => {
+    return (
+      <div>
+        <p> 에러: {error.message} </p>
+        <button onClick={() => resetErrorBoundary()}> 다시 시도 </button>
       </div>
+    );
+  };
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+  return (
+    <div className="flex justify-center max-w-contentW gap-[2rem_1rem] flex-wrap">
+      <ErrorBoundary FallbackComponent={ErrorPage}>
+        <Suspense fallback={<>스켈레톤</>}>
+          {data?.map((article: { title: string; thumbnail: string; link: string; }, index: React.Key | null | undefined) => (
+            <ArticleComponent
+              key={index}
+              title={article.title}
+              thumbnail={article.thumbnail}
+              link={article.link}
+            />
+          ))}
+        </Suspense>
+      </ErrorBoundary>
+    </div>
+  );
+};
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+export default function Home() {
+  React.useEffect(() => {
+    const CT = new ChannelTalk();
+    CT.boot({ pluginKey: "a91cb56e-c0c2-458f-a6c1-4a8ba3a34c93" });
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
+    return () => {
+      CT.shutdown();
+    };
+  }, []);
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+  return (
+    <div className="flex w-full flex-col items-center">
+      <Header isDark={true} />
+      <IntroComponent />
+      <KeyWardHeader />
+      <Article />
+    </div>
   );
 }
+
