@@ -9,7 +9,7 @@ export const uesArticlePage = (
     queryKey: ["getPlacesOfCategory"],
     queryFn: ({ pageParam }) =>
       getArticle(keyWord, pageParam),
-    initialPageParam: 1, // v5 달라진 점 -> 본인이 불러와야 하는 첫 페이지를 지정!
+    initialPageParam: 1, 
 
     getNextPageParam: (lastPage, allPages) => {
       if (lastPage?.data.total_places) {
