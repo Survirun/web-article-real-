@@ -17,7 +17,6 @@ export const uesArticlePage = (
         console.log(totalPages)
         return allPages.length < totalPages ? allPages.length + 1 : undefined;
       }
-      // return값이 pageParam으로 전달
     },
 
     retry: 0,
