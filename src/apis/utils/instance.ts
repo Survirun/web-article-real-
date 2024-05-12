@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://article-back-a3007b45852a.herokuapp.com/api/"
+const BASE_URL = "https://api.logcat.kr/api/"
 
 function axiosAPI(url: string, options?: any) {
     const instance = axios.create({ baseURL: url, ...options });
