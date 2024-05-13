@@ -153,7 +153,6 @@ const ArticleComponent = ({ title, thumbnail, link }: ArticleProps) => {
         </div>
         <div className="flex flex-row justify-center gap-[0.75rem] w-full h-full">
           <Typo
-            // onClick={() => openInNewTab(link)}
             className="overflow-hidden w-full leading-5 [wordWrap:break-word] [textOverflow:ellipsis] [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]"
           >
             {title}
