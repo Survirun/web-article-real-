@@ -186,13 +186,6 @@ const Article = () => {
       getArticleList(res?.data)
     );
 
-    const fetchArticles = async () => {
-      const response = await axios.post(
-        `/article/0?page=1`,
-      );
-      return response.data;
-    };
-
   const { data } = useQuery<Array<ArticleInterface>>({ queryKey: [queryKey], queryFn: queryFN });
 
   const ErrorPage = ({ error, resetErrorBoundary }: FallbackProps) => {
