@@ -9,8 +9,6 @@ import clsx from "clsx/lite";
 import React, { Suspense } from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 import {
-  InfiniteData,
-  useInfiniteQuery,
   useQuery,
 } from "@tanstack/react-query";
 import Image from "next/image";
