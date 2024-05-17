@@ -10,7 +10,7 @@
 /coverage
 
 # next.
-/.next
+/.next/
 /out/
 
 # production
