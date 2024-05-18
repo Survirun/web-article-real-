@@ -12,7 +12,6 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import Image from "next/image";
-import axios from "axios";
 
 const PAGE = 20;
 
