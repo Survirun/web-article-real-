@@ -13,8 +13,6 @@ import {
 } from "@tanstack/react-query";
 import Image from "next/image";
 
-const PAGE = 20;
-
 const IntroComponent = () => {
   return (
     <div className="flex justify-between items-center flex-shrink-0 p-[0rem_15rem_3.75rem_15rem] w-full h-[30rem] bg-black">
