@@ -82,7 +82,7 @@ const KeyWardHeader = () => {
     const handleMouseMove = (e: MouseEvent) => {
       e.preventDefault();
       const x = e.pageX - div.offsetLeft;
-      const walk = (x - startX) * 1; // scroll-fast
+      const walk = (x - startX) * 1;
       div.scrollLeft = scrollLeft - walk;
     };
 
