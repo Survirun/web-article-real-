@@ -5,6 +5,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 export const uesArticlePage = (
   keyWord: number,
 ) => {
+  
   const { data, isLoading, isFetching, ...rest } = useInfiniteQuery({
     queryKey: ["getPlacesOfCategory"],
     queryFn: ({ pageParam }) =>
