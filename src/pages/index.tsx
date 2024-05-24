@@ -211,6 +211,7 @@ const Article = () => {
 };
 
 export default function Home() {
+  
   React.useEffect(() => {
     const CT = new ChannelTalk();
     CT.boot({ pluginKey: "a91cb56e-c0c2-458f-a6c1-4a8ba3a34c93" });
