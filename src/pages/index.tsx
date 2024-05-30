@@ -160,7 +160,6 @@ const ArticleComponent = ({ title, thumbnail, link }: ArticleProps) => {
     )
   );
 };
-
 interface ArticleInterface {
   snippet: string;
   date: string;
