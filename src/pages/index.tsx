@@ -6,12 +6,14 @@ import { Header, IconButton, Typo } from "@/components";
 import ChannelTalk from "@/third-party/ChannelTalk";
 import Spline from "@splinetool/react-spline";
 import clsx from "clsx/lite";
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 import {
   useQuery,
 } from "@tanstack/react-query";
 import Image from "next/image";
+import useSWR from 'swr';
+import { getArticleKeyword, ArticleResponse, Article as ArticleInterfaces, Passed } from "@/apis/api";
 
 const IntroComponent = () => {
   return (
@@ -174,7 +176,88 @@ interface ArticleInterface {
   category: number;
 }
 
+const fetchAllTabsData = async (tabs: { keyword: number }[], passed: Passed) => {
+  const dataPromises = tabs.map((tab) => getArticleKeyword(tab.keyword, 1, passed));
+  return Promise.all(dataPromises);
+};
+
+const fetchMoreData = async (activeTab: number, page: number, passed: Passed) => {
+  const response = await getArticleKeyword(activeTab, page, passed);
+  return response.data.articles;
+};
+
 const Article = () => {
+  const [activeTab, setActiveTab] = useState(3); // 현재 선택된 탭 상태 (3번 탭으로 초기화)
+  const [page, setPage] = useState(1); // 페이지 번호, 필요에 따라 변경 가능
+  const [allArticles, setAllArticles] = useState<ArticleInterfaces[]>([]);
+  const passed: Passed = ["", "", ""]; // Passed 리스트 초기화
+  const loader = useRef<HTMLDivElement | null>(null);
+  const isLoadingRef = useRef(false);
+
+  const tabs = [
+    { name: 'Tab 3', keyword: 3 },
+    { name: 'Tab 4', keyword: 4 },
+    { name: 'Tab 5', keyword: 5 },
+    { name: 'Tab 6', keyword: 6 },
+    { name: 'Tab 7', keyword: 7 },
+    { name: 'Tab 8', keyword: 8 },
+    { name: 'Tab 9', keyword: 9 },
+    { name: 'Tab 10', keyword: 10 },
+    { name: 'Tab 12', keyword: 12 },
+  ];
+
+  const { data, error } = useSWR(
+    ['allTabsData', passed],
+    () => fetchAllTabsData(tabs, passed),
+    { revalidateOnFocus: false }
+  );
+
+  const initialArticles = data ? data.find((d, index) => tabs[index].keyword === activeTab)?.data.articles || [] : [];
+
+  useEffect(() => {
+    if (initialArticles.length > 0) {
+      setAllArticles(initialArticles);
+    }
+  }, [initialArticles]);
+
+  useEffect(() => {
+    const handleObserver = async (entries: IntersectionObserverEntry[]) => {
+      const target = entries[0];
+      if (target.isIntersecting && !isLoadingRef.current) {
+        isLoadingRef.current = true;
+        const newPage = page + 1;
+        setPage(newPage);
+        const moreArticles = await fetchMoreData(activeTab, newPage, passed);
+        setAllArticles((prev) => [...prev, ...moreArticles]);
+        isLoadingRef.current = false;
+      }
+    };
+
+    const options = {
+      root: null,
+      rootMargin: '20px',
+      threshold: 0,
+    };
+
+    const observer = new IntersectionObserver(handleObserver, options);
+
+    if (loader.current) {
+      observer.observe(loader.current);
+    }
+
+    return () => {
+      if (loader.current) {
+        observer.unobserve(loader.current);
+      }
+    };
+  }, [activeTab, page]);
+
+  useEffect(() => {
+    setPage(1);
+    setAllArticles([]);
+  }, [activeTab]);
+
+  //----------
 
   const queryKey = "user";
   const queryFN = async () =>
@@ -182,7 +265,7 @@ const Article = () => {
       getArticleList(res?.data)
     );
 
-  const { data } = useQuery<Array<ArticleInterface>>({ queryKey: [queryKey], queryFn: queryFN });
+  //const { data } = useQuery<Array<ArticleInterface>>({ queryKey: [queryKey], queryFn: queryFN });
 
   const ErrorPage = ({ error, resetErrorBoundary }: FallbackProps) => {
     return (
@@ -197,14 +280,52 @@ const Article = () => {
     <div className="flex justify-center max-w-contentW gap-[2rem_1rem] flex-wrap">
       <ErrorBoundary FallbackComponent={ErrorPage}>
         <Suspense fallback={<>스켈레톤</>}>
-          {data?.map((article: { title: string; thumbnail: string; link: string; }, index: React.Key | null | undefined) => (
+        <main className="container mx-auto">
+        <div className="flex mb-4 border-b border-gray-200">
+          {tabs.map((tab) => (
+            <button
+              key={tab.keyword}
+              onClick={() => {
+                setActiveTab(tab.keyword);
+                setPage(1); // 페이지를 1로 초기화하거나 원하는 대로 설정
+                setAllArticles([]); // 페이지를 변경할 때 기존 기사 목록을 초기화
+              }}
+              className={`px-4 py-2 mr-2 transition-colors duration-200 ${
+                activeTab === tab.keyword ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-black'
+              }`}
+            >
+              {tab.name}
+            </button>
+          ))}
+        </div>
+        {error ? (
+          <div className="text-center text-red-500">Failed to fetch articles</div>
+        ) : (
+          <div className="grid grid-cols-4 gap-4 pt-6">
+            {allArticles.map((article: ArticleInterfaces, index) => (
+              <div key={article._id+index}>
+                <a href={article.link} target="_blank" rel="noopener noreferrer">
+                  <div className="w-full h-48 flex items-center justify-center bg-gray-100">
+                    <img src={article.thumbnail ?? undefined} alt={article.title} className="max-w-full max-h-full object-cover" />
+                  </div>
+                  <div className="pt-4">
+                    <h2 className="text-lg font-semibold">{article.title}</h2>
+                  </div>
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
+        <div ref={loader} />
+      </main>
+          {/* {data?.map((article: { title: string; thumbnail: string; link: string; }, index: React.Key | null | undefined) => (
             <ArticleComponent
               key={index}
               title={article.title}
               thumbnail={article.thumbnail}
               link={article.link}
             />
-          ))}
+          ))} */}
         </Suspense>
       </ErrorBoundary>
     </div>
