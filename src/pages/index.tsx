@@ -40,8 +40,11 @@ const IntroComponent = () => {
   );
 };
 
-const KeyWardHeader = () => {
-  const [active, setActive] = React.useState(0);
+const KeyWardHeader = ({articleState}: { articleState: ArticleState }) => {
+  const { activeTab, setActiveTab, resetPage, resetAllArticles } = articleState;
+
+  // const [active, setActive] = React.useState(0);
+  // const [page, setPage] = useState(1);
   const datas = [
     { name: "전체", id: 0 },
     { name: "내 관심사", id: 1 },
@@ -106,15 +109,19 @@ const KeyWardHeader = () => {
     >
       {datas.map((data, index) => (
         <Button
-          className={index === active ? "active shrink-0" : "shrink-0"}
+          className={index === activeTab ? "active shrink-0" : "shrink-0"}
           key={index}
-          onClick={() => setActive(index)}
+          onClick={() => {
+            setActiveTab(data.id);
+            resetPage
+            resetAllArticles
+          }}
         >
           {data?.name}
         </Button>
       ))}
     </div>
-  );
+  ); 
 };
 
 interface ArticleProps {
@@ -186,10 +193,12 @@ const fetchMoreData = async (activeTab: number, page: number, passed: Passed) =>
   return response.data.articles;
 };
 
-const Article = () => {
-  const [activeTab, setActiveTab] = useState(3); // 현재 선택된 탭 상태 (3번 탭으로 초기화)
-  const [page, setPage] = useState(1); // 페이지 번호, 필요에 따라 변경 가능
-  const [allArticles, setAllArticles] = useState<ArticleInterfaces[]>([]);
+const Article = ({articleState}: { articleState: ArticleState }) => {
+  const { activeTab, page, setPage, allArticles, setAllArticles } = articleState;
+
+  //const [activeTab, setActiveTab] = useState(3); // 현재 선택된 탭 상태 (3번 탭으로 초기화)
+  //const [page, setPage] = useState(1); // 페이지 번호, 필요에 따라 변경 가능
+  //const [allArticles, setAllArticles] = useState<ArticleInterfaces[]>([]);
   const passed: Passed = ["", "", ""]; // Passed 리스트 초기화
   const loader = useRef<HTMLDivElement | null>(null);
   const isLoadingRef = useRef(false);
@@ -228,7 +237,7 @@ const Article = () => {
         const newPage = page + 1;
         setPage(newPage);
         const moreArticles = await fetchMoreData(activeTab, newPage, passed);
-        setAllArticles((prev) => [...prev, ...moreArticles]);
+        setAllArticles((prev: any) => [...prev, ...moreArticles]);
         isLoadingRef.current = false;
       }
     };
@@ -281,7 +290,7 @@ const Article = () => {
       <ErrorBoundary FallbackComponent={ErrorPage}>
         <Suspense fallback={<>스켈레톤</>}>
         <main className="container mx-auto">
-        <div className="flex mb-4 border-b border-gray-200">
+        {/* <div className="flex mb-4 border-b border-gray-200">
           {tabs.map((tab) => (
             <button
               key={tab.keyword}
@@ -297,7 +306,7 @@ const Article = () => {
               {tab.name}
             </button>
           ))}
-        </div>
+        </div> */}
         {error ? (
           <div className="text-center text-red-500">Failed to fetch articles</div>
         ) : (
@@ -332,8 +341,37 @@ const Article = () => {
   );
 };
 
+interface ArticleState {
+  activeTab: number;
+  page: number;
+  allArticles: Array<any>;
+  setPage: any;
+  setActiveTab: any;
+  setAllArticles: any;
+  resetPage: () => void;
+  resetAllArticles: () => void;
+}
+
+const useArticleState = (): ArticleState => {
+  const [activeTab, setActiveTab] = useState(0);
+  const [page, setPage] = useState(1);
+  const [allArticles, setAllArticles] = useState<ArticleInterfaces[]>([]);
+
+  const resetPage = () => {
+    setPage(1);
+  }
+
+  const resetAllArticles = () => {
+    setAllArticles([])
+  }
+
+  return { activeTab, page, allArticles, setPage, setActiveTab, setAllArticles, resetPage, resetAllArticles }
+}
+
 export default function Home() {
   
+  const aritlceState = useArticleState();
+
   React.useEffect(() => {
     const CT = new ChannelTalk();
     CT.boot({ pluginKey: "a91cb56e-c0c2-458f-a6c1-4a8ba3a34c93" });
@@ -346,8 +384,8 @@ export default function Home() {
     <div className="flex w-full flex-col items-center">
       <Header isDark={true} />
       <IntroComponent />
-      <KeyWardHeader />
-      <Article />
+      <KeyWardHeader articleState={aritlceState}/>
+      <Article articleState={aritlceState}/>
     </div>
   );
 }
