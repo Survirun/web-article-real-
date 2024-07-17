@@ -126,7 +126,7 @@ const KeyWardHeader = ({articleState}: { articleState: ArticleState }) => {
 
 interface ArticleProps {
   title: string;
-  thumbnail: string;
+  thumbnail: string | null;
   link: string;
 }
 
@@ -146,11 +146,11 @@ const ArticleComponent = ({ title, thumbnail, link }: ArticleProps) => {
     mounted && (
       <div className="flex flex-col items-start gap-[0.5rem] max-w-[14.25rem] cursor-pointer group/article">
         <div className="flex flex-col content-center gap-[0.75rem] w-full">
-          <Image
+          <img
             width={228}
             height={128}
             alt={title}
-            src={thumbnail}
+            src={thumbnail || ''}
             onClick={() => openInNewTab(link)}
             className="img"
           />
@@ -169,19 +169,6 @@ const ArticleComponent = ({ title, thumbnail, link }: ArticleProps) => {
     )
   );
 };
-
-interface ArticleInterface {
-  snippet: string;
-  date: string;
-  thumbnail: string;
-  keywords: Array<string>;
-  displayLink: string;
-  sitename: string;
-  link: string;
-  title: string;
-  cx: number;
-  category: number;
-}
 
 const fetchAllTabsData = async (tabs: { keyword: number }[], passed: Passed) => {
   const dataPromises = tabs.map((tab) => getArticleKeyword(tab.keyword, 1, passed));
@@ -266,16 +253,22 @@ const Article = ({articleState}: { articleState: ArticleState }) => {
         <main className="container mx-auto">
           <div className="grid grid-cols-4 gap-4 pt-6">
             {allArticles.map((article: ArticleInterfaces, index) => (
-              <div key={article._id+index}>
-                <a href={article.link} target="_blank" rel="noopener noreferrer">
-                  <div className="w-full h-48 flex items-center justify-center bg-gray-100">
-                    <img src={article.thumbnail ?? undefined} alt={article.title} className="max-w-full max-h-full object-cover" />
-                  </div>
-                  <div className="pt-4">
-                    <h2 className="text-lg font-semibold">{article.title}</h2>
-                  </div>
-                </a>
-              </div>
+              <ArticleComponent
+                key={index}
+                title={article.title}
+                thumbnail={article.thumbnail}
+                link={article.link}
+              />
+              // <div key={article._id+index}>
+              //   <a href={article.link} target="_blank" rel="noopener noreferrer">
+              //     <div className="w-full h-48 flex items-center justify-center bg-gray-100">
+              //       <img src={article.thumbnail ?? undefined} alt={article.title} className="max-w-full max-h-full object-cover" />
+              //     </div>
+              //     <div className="pt-4">
+              //       <h2 className="text-lg font-semibold">{article.title}</h2>
+              //     </div>
+              //   </a>
+              // </div>
             ))}
           </div>
         <div ref={loader} />
