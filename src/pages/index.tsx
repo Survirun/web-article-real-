@@ -43,8 +43,6 @@ const IntroComponent = () => {
 const KeyWardHeader = ({articleState}: { articleState: ArticleState }) => {
   const { activeTab, setActiveTab, resetPage, resetAllArticles } = articleState;
 
-  // const [active, setActive] = React.useState(0);
-  // const [page, setPage] = useState(1);
   const datas = [
     { name: "전체", id: 0 },
     { name: "내 관심사", id: 1 },
@@ -181,11 +179,8 @@ const fetchMoreData = async (activeTab: number, page: number, passed: Passed) =>
 };
 
 const Article = ({articleState}: { articleState: ArticleState }) => {
-  const { activeTab, page, setPage, allArticles, setAllArticles } = articleState;
+  const { activeTab, page, setPage, allArticles, setAllArticles, resetPage, resetAllArticles } = articleState;
 
-  //const [activeTab, setActiveTab] = useState(3); // 현재 선택된 탭 상태 (3번 탭으로 초기화)
-  //const [page, setPage] = useState(1); // 페이지 번호, 필요에 따라 변경 가능
-  //const [allArticles, setAllArticles] = useState<ArticleInterfaces[]>([]);
   const passed: Passed = ["", "", ""]; // Passed 리스트 초기화
   const loader = useRef<HTMLDivElement | null>(null);
   const isLoadingRef = useRef(false);
@@ -223,8 +218,8 @@ const Article = ({articleState}: { articleState: ArticleState }) => {
   }, [activeTab, page]);
 
   useEffect(() => {
-    setPage(1);
-    setAllArticles([]);
+    resetPage()
+    resetAllArticles()
   }, [activeTab]);
 
   //----------
@@ -250,8 +245,7 @@ const Article = ({articleState}: { articleState: ArticleState }) => {
     <div className="flex justify-center max-w-contentW gap-[2rem_1rem] flex-wrap">
       <ErrorBoundary FallbackComponent={ErrorPage}>
         <Suspense fallback={<>스켈레톤</>}>
-   
-            {allArticles.map((article: ArticleInterfaces, index) => (
+          {allArticles.map((article: ArticleInterfaces, index) => (
               <ArticleComponent
                 key={index}
                 title={article.title}
@@ -259,9 +253,7 @@ const Article = ({articleState}: { articleState: ArticleState }) => {
                 link={article.link}
               />
             ))}
-       
-        <div ref={loader} />
-  
+          <div ref={loader} />
         </Suspense>
       </ErrorBoundary>
     </div>
