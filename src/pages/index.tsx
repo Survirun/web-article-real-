@@ -146,22 +146,24 @@ const ArticleComponent = ({ title, thumbnail, link }: ArticleProps) => {
         <div className="flex flex-col content-center gap-[0.75rem] w-full">
           <img
             width={228}
-            height={128}
+            height={228}
             alt={title}
             src={thumbnail || ''}
             onClick={() => openInNewTab(link)}
             className="img"
           />
         </div>
-        <div className="flex flex-row justify-center gap-[0.75rem] w-full h-full">
-          <Typo
-            className="overflow-hidden w-full leading-5 [wordWrap:break-word] [textOverflow:ellipsis] [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]"
-          >
-            {title}
-          </Typo>
-          <div className="group-hover/article:flex hidden gap-[0.75rem] items-center">
-            <IconButton type="bookMark" />
+        <p
+          className="overflow-hidden w-full h-full text-zinc-900 text-base font-medium leading-normal [wordWrap:break-word] [textOverflow:ellipsis] [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]"
+        >
+          {title}
+        </p>
+        <div className="w-full flex flex-row justify-between items-center gap-[0.5rem]">
+          <div className="flex items-center gap-[0.25rem]">
+            <img width={16} height={16} className="w-4 h-4 rounded-full bg-[#EEEEF0]" src="https://via.placeholder.com/16x16"/>
+            <p className="text-[#84848F] text-sm font-medium leading-normal">브런치스토리</p>
           </div>
+          <p className="text-[#A0A0AB] text-sm font-medium leading-normal">2024.05.21</p>
         </div>
       </div>
     )

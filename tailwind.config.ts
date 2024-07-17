@@ -57,8 +57,8 @@ const config: Config = {
       addComponents({
         ".img": {
           width: '14.25rem',
-          height: '8rem',
-          borderRadius: '0.5rem',
+          height: '14.25rem',
+          borderRadius: '0.25rem',
           backgroundColor: theme('colors.gray[300]'),
           objectFit: 'cover',
           flexShrink: 0,
