@@ -250,8 +250,7 @@ const Article = ({articleState}: { articleState: ArticleState }) => {
     <div className="flex justify-center max-w-contentW gap-[2rem_1rem] flex-wrap">
       <ErrorBoundary FallbackComponent={ErrorPage}>
         <Suspense fallback={<>스켈레톤</>}>
-        <main className="container mx-auto">
-          <div className="grid grid-cols-4 gap-4 pt-6">
+   
             {allArticles.map((article: ArticleInterfaces, index) => (
               <ArticleComponent
                 key={index}
@@ -259,28 +258,10 @@ const Article = ({articleState}: { articleState: ArticleState }) => {
                 thumbnail={article.thumbnail}
                 link={article.link}
               />
-              // <div key={article._id+index}>
-              //   <a href={article.link} target="_blank" rel="noopener noreferrer">
-              //     <div className="w-full h-48 flex items-center justify-center bg-gray-100">
-              //       <img src={article.thumbnail ?? undefined} alt={article.title} className="max-w-full max-h-full object-cover" />
-              //     </div>
-              //     <div className="pt-4">
-              //       <h2 className="text-lg font-semibold">{article.title}</h2>
-              //     </div>
-              //   </a>
-              // </div>
             ))}
-          </div>
+       
         <div ref={loader} />
-      </main>
-          {/* {data?.map((article: { title: string; thumbnail: string; link: string; }, index: React.Key | null | undefined) => (
-            <ArticleComponent
-              key={index}
-              title={article.title}
-              thumbnail={article.thumbnail}
-              link={article.link}
-            />
-          ))} */}
+  
         </Suspense>
       </ErrorBoundary>
     </div>
