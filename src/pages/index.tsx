@@ -203,32 +203,6 @@ const Article = ({articleState}: { articleState: ArticleState }) => {
   const loader = useRef<HTMLDivElement | null>(null);
   const isLoadingRef = useRef(false);
 
-  const tabs = [
-    { name: 'Tab 3', keyword: 3 },
-    { name: 'Tab 4', keyword: 4 },
-    { name: 'Tab 5', keyword: 5 },
-    { name: 'Tab 6', keyword: 6 },
-    { name: 'Tab 7', keyword: 7 },
-    { name: 'Tab 8', keyword: 8 },
-    { name: 'Tab 9', keyword: 9 },
-    { name: 'Tab 10', keyword: 10 },
-    { name: 'Tab 12', keyword: 12 },
-  ];
-
-  const { data, error } = useSWR(
-    ['allTabsData', passed],
-    () => fetchAllTabsData(tabs, passed),
-    { revalidateOnFocus: false }
-  );
-
-  const initialArticles = data ? data.find((d, index) => tabs[index].keyword === activeTab)?.data.articles || [] : [];
-
-  useEffect(() => {
-    if (initialArticles.length > 0) {
-      setAllArticles(initialArticles);
-    }
-  }, [initialArticles]);
-
   useEffect(() => {
     const handleObserver = async (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];
@@ -290,26 +264,6 @@ const Article = ({articleState}: { articleState: ArticleState }) => {
       <ErrorBoundary FallbackComponent={ErrorPage}>
         <Suspense fallback={<>스켈레톤</>}>
         <main className="container mx-auto">
-        {/* <div className="flex mb-4 border-b border-gray-200">
-          {tabs.map((tab) => (
-            <button
-              key={tab.keyword}
-              onClick={() => {
-                setActiveTab(tab.keyword);
-                setPage(1); // 페이지를 1로 초기화하거나 원하는 대로 설정
-                setAllArticles([]); // 페이지를 변경할 때 기존 기사 목록을 초기화
-              }}
-              className={`px-4 py-2 mr-2 transition-colors duration-200 ${
-                activeTab === tab.keyword ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-black'
-              }`}
-            >
-              {tab.name}
-            </button>
-          ))}
-        </div> */}
-        {error ? (
-          <div className="text-center text-red-500">Failed to fetch articles</div>
-        ) : (
           <div className="grid grid-cols-4 gap-4 pt-6">
             {allArticles.map((article: ArticleInterfaces, index) => (
               <div key={article._id+index}>
@@ -324,7 +278,6 @@ const Article = ({articleState}: { articleState: ArticleState }) => {
               </div>
             ))}
           </div>
-        )}
         <div ref={loader} />
       </main>
           {/* {data?.map((article: { title: string; thumbnail: string; link: string; }, index: React.Key | null | undefined) => (
