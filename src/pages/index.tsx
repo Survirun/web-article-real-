@@ -128,10 +128,13 @@ const KeyWardHeader = ({articleState}: { articleState: ArticleState }) => {
 interface ArticleProps {
   title: string;
   thumbnail: string | null;
+  displayLink: string;
+  sitename: string;
   link: string;
+  date: string | null;
 }
 
-const ArticleComponent = ({ title, thumbnail, link }: ArticleProps) => {
+const ArticleComponent = ({ title, thumbnail, displayLink, sitename, link, date }: ArticleProps) => {
   const [mounted, setMounted] = React.useState<boolean>(false);
 
   React.useEffect(() => {
@@ -141,6 +144,12 @@ const ArticleComponent = ({ title, thumbnail, link }: ArticleProps) => {
   const openInNewTab = (url: string) => {
     const newWindow = window.open(url, "_blank", "noopener,noreferrer");
     if (newWindow) newWindow.opener = null;
+  };
+
+  const modifyUrl = (url: string): string => {
+    return url.endsWith('/')
+      ? `${url}favicon.ico`
+      : `${url}/favicon.ico`;
   };
 
   return (
@@ -163,10 +172,10 @@ const ArticleComponent = ({ title, thumbnail, link }: ArticleProps) => {
         </p>
         <div className="w-full flex flex-row justify-between items-center gap-[0.5rem]">
           <div className="flex items-center gap-[0.25rem]">
-            <img width={16} height={16} className="w-4 h-4 rounded-full bg-[#EEEEF0]" src="https://via.placeholder.com/16x16"/>
-            <p className="text-[#84848F] text-sm font-medium leading-normal">브런치스토리</p>
+            <img width={16} height={16} className="w-4 h-4 rounded-full bg-[#EEEEF0]" src={modifyUrl(displayLink)}/>
+            <p className="text-[#84848F] text-sm font-medium leading-normal">{sitename}</p>
           </div>
-          <p className="text-[#A0A0AB] text-sm font-medium leading-normal">2024.05.21</p>
+          <p className="text-[#A0A0AB] text-sm font-medium leading-normal">{date}</p>
         </div>
       </div>
     )
@@ -224,7 +233,7 @@ const Article = ({articleState}: { articleState: ArticleState }) => {
 
   useEffect(() => {
     resetPage()
-    resetAllArticles()
+    resetAllArticles();
   }, [activeTab]);
 
   //----------
@@ -255,7 +264,10 @@ const Article = ({articleState}: { articleState: ArticleState }) => {
                 key={index}
                 title={article.title}
                 thumbnail={article.thumbnail}
+                displayLink={article.displayLink}
+                sitename={article.sitename}
                 link={article.link}
+                date={article.date}
               />
             ))}
           <div ref={loader} />
