@@ -114,8 +114,8 @@ const KeyWardHeader = ({articleState}: { articleState: ArticleState }) => {
           key={index}
           onClick={() => {
             setActiveTab(data.id);
-            resetPage
-            resetAllArticles
+            resetPage();
+            resetAllArticles();
           }}
         >
           {data?.name}
@@ -200,6 +200,19 @@ const Article = ({articleState}: { articleState: ArticleState }) => {
   const isLoadingRef = useRef(false);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const initialArticles = await fetchMoreData(activeTab, page, passed);
+        setAllArticles(initialArticles);
+      } catch (error) {
+        console.error('Error fetching initial data:', error);
+      }
+    };
+  
+    fetchData();
+  }, [activeTab]);
+
+  useEffect(() => {
     const handleObserver = async (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];
       if (target.isIntersecting && !isLoadingRef.current) {
@@ -232,7 +245,7 @@ const Article = ({articleState}: { articleState: ArticleState }) => {
   }, [activeTab, page]);
 
   useEffect(() => {
-    resetPage()
+    resetPage();
     resetAllArticles();
   }, [activeTab]);
 
