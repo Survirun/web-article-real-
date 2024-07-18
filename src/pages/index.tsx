@@ -17,25 +17,28 @@ import { getArticleKeyword, ArticleResponse, Article as ArticleInterfaces, Passe
 
 const IntroComponent = () => {
   return (
-    <div className="flex justify-between items-center flex-shrink-0 p-[0rem_15rem_3.75rem_15rem] w-full h-[30rem] bg-black">
-      <div className="flex flex-col justify-center gap-[0.5rem]">
-        <h2 className="text-gray-100 text-5xl font-semibold leading-[4.5rem] w-[30rem]">
-          브랜딩을 반영한
-          <br />
-          두줄 짜리 문구
-        </h2>
-        <p className="text-gray-400 font-medium text-base">
-          여기는 한 3줄짜리면 괜찮을 것 같은데
-          <br />
-          어떻게 써야 할 지 모르곘으니까
-          <br />
-          일단 이렇게라도 채워두자
-        </p>
+    <div className="w-full bg-black flex justify-center">
+      <div className="max-w-contentW flex justify-between items-center flex-shrink-0 h-[30rem] bg-black">
+        <div className="flex flex-col justify-center gap-[0.5rem]">
+          <h2 className="text-gray-100 text-5xl font-semibold leading-[4.5rem] w-[30rem]">
+            브랜딩을 반영한
+            <br />
+            두줄 짜리 문구
+          </h2>
+          <p className="text-gray-400 font-medium text-base">
+            여기는 한 3줄짜리면 괜찮을 것 같은데
+            <br />
+            어떻게 써야 할 지 모르곘으니까
+            <br />
+            일단 이렇게라도 채워두자
+          </p>
+        </div>
+        <Image alt="메인 페이지 이미지" width={400} height={400} src={"/heroSectionGraphics/main_sprout.webp"}/>
+        {/* <Spline
+          className="flex-grow-0"
+          scene="https://prod.spline.design/cglIthZkeCGUDP56/scene.splinecode"
+        /> */}
       </div>
-      <Spline
-        className="flex-grow-0"
-        scene="https://prod.spline.design/cglIthZkeCGUDP56/scene.splinecode"
-      />
     </div>
   );
 };
