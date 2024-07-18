@@ -3,18 +3,18 @@
 @tailwind utilities;
 
 @font-face {
-	font-family: 'WantedSansVariable';
+	font-family: 'PretendardVariable';
 	font-weight: 45 920;
 	font-style: normal;
 	font-display: swap;
-	src: url('./font/WantedSansVariable.woff2') format('woff2-variations');
+	src: url('./font/PretendardVariable.woff2') format('woff2-variations');
 }
 
 
 :root {
   --foreground-rgb: 0, 0, 0;
   margin: 0;
-  font-family: "WantedSansVariable";
+  font-family: "PretendardVariable";
 }
 
 @layer utilities {
