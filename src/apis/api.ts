@@ -39,7 +39,7 @@ export const getArticleKeyword = async (keyword: number, page: number, passed: P
       `/article/${keyword}`,
       { passed:[]   }, // Passed를 요청 본문으로 전달
       {
-        params: { page:1 },
+        params: { page: page },
         headers: {
           'uid': 'l8Z8k1UzGKhJuydX0Kyxu3rFMgJ3',
         },
