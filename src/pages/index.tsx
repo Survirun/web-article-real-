@@ -195,7 +195,7 @@ const fetchMoreData = async (activeTab: number, page: number, passed: Passed) =>
 const Article = ({articleState}: { articleState: ArticleState }) => {
   const { activeTab, page, setPage, allArticles, setAllArticles, resetPage, resetAllArticles } = articleState;
 
-  const passed: Passed = ["", "", ""]; // Passed 리스트 초기화
+  const passed: Passed = [""];
   const loader = useRef<HTMLDivElement | null>(null);
   const isLoadingRef = useRef(false);
 
