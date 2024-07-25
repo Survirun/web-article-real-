@@ -34,10 +34,6 @@ const IntroComponent = () => {
           </p>
         </div>
         <Image alt="메인 페이지 이미지" width={400} height={400} src={"/heroSectionGraphics/main_sprout.webp"}/>
-        {/* <Spline
-          className="flex-grow-0"
-          scene="https://prod.spline.design/cglIthZkeCGUDP56/scene.splinecode"
-        /> */}
       </div>
     </div>
   );
