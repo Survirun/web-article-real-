@@ -105,7 +105,7 @@ const KeyWardHeader = ({articleState}: { articleState: ArticleState }) => {
     >
       {datas.map((data, index) => (
         <Button
-          className={index === activeTab ? "active shrink-0" : "shrink-0"}
+          className={data.id === activeTab ? "active shrink-0" : "shrink-0"}
           key={index}
           onClick={() => {
             setActiveTab(data.id);
