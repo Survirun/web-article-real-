@@ -44,7 +44,6 @@ const KeyWardHeader = ({articleState}: { articleState: ArticleState }) => {
 
   const datas = [
     { name: "전체", id: 0 },
-    { name: "내 관심사", id: 1 },
     { name: "IT 소식 ", id: 2 },
     { name: "Android", id: 3 },
     { name: "Web", id: 4 },
