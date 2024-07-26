@@ -37,7 +37,7 @@ export const getArticleKeyword = async (keyword: number, page: number, passed: P
   try {
     const response = await api.post<ArticleResponse>(
       `/article/${keyword}`,
-      { passed:[]   }, // Passed를 요청 본문으로 전달
+      { passed: [] },
       {
         params: { page: page },
         headers: {
