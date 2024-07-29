@@ -141,6 +141,18 @@ const ArticleComponent = ({ title, thumbnail, displayLink, sitename, link, date 
     if (newWindow) newWindow.opener = null;
   };
 
+  const favicon = (url: string): string => {
+    const urlPattern = /^https:\/\/([^/]+)/;
+    const match = url.match(urlPattern);
+
+    if (match) {
+        const domain = match[1];
+        return `https://${domain}/favicon.ico`;
+    }
+
+    return `http://www.google.com/s2/favicons?domain=${url}`;
+  }
+
   const modifyUrl = (url: string): string => {
     return url.endsWith('/')
       ? `${url}favicon.ico`
@@ -167,7 +179,7 @@ const ArticleComponent = ({ title, thumbnail, displayLink, sitename, link, date 
         </p>
         <div className="w-full flex flex-row justify-between items-center gap-[0.5rem]">
           <div className="flex items-center gap-[0.25rem]">
-            <img width={16} height={16} className="w-4 h-4 rounded-full bg-[#EEEEF0]" src={`http://www.google.com/s2/favicons?domain=${link}`}/>
+            <img width={16} height={16} className="w-4 h-4 rounded-full bg-[#EEEEF0]" src={favicon(link)}/>
             <p className="text-[#84848F] text-sm font-medium leading-normal">{sitename}</p>
           </div>
           <p className="text-[#A0A0AB] text-sm font-medium leading-normal">{date}</p>
