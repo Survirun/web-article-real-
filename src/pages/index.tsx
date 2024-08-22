@@ -178,7 +178,7 @@ const ArticleComponent = ({ title, thumbnail, displayLink, sitename, link, date 
         </p>
         <div className="w-full flex flex-row justify-between items-center gap-[0.5rem]">
           <div className="flex items-center gap-[0.25rem]">
-            <img width={16} height={16} className="w-4 h-4 rounded-full bg-[#EEEEF0]" src={getFaviconUrl(link)}/>
+            <img alt="아이콘" width={16} height={16} className="w-4 h-4 rounded-full bg-[#EEEEF0]" src={getFaviconUrl(link)}/>
             <p className="text-[#84848F] text-sm font-medium leading-normal">{sitename}</p>
           </div>
           <p className="text-[#A0A0AB] text-sm font-medium leading-normal">{date}</p>
