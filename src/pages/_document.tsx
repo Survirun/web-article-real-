@@ -10,7 +10,7 @@ export default function Document() {
         <meta property="og:title" content="Title Here" />
         <meta property="og:description" content="Description Here" />
         <meta property="og:image" content="image_url_here" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <body>
         <Main />
