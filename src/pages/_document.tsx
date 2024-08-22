@@ -10,6 +10,7 @@ export default function Document() {
         <meta property="og:title" content="Title Here" />
         <meta property="og:description" content="Description Here" />
         <meta property="og:image" content="image_url_here" />
+        <meta name="google-site-verification" content="lboNM8Bir6mjLtqXzdyDeK3e3j1oPidx8BpD6yBrm6I" />
         <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <body>
