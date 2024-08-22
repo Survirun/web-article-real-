@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://api.logcat.kr/api', // 실제 API 베이스 URL로 변경
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "",
   timeout: 3000,
 });
 
