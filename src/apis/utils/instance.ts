@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://api.logcat.kr/api/"
+const BASE_URL: string = process.env.NEXT_PUBLIC_API_URL || "";
 
 function axiosAPI(url: string, options?: any) {
     const instance = axios.create({ baseURL: url, ...options });
