@@ -33,9 +33,9 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             echo "${{ secrets.ENV_B64 }}" > .B64env
-            base64 -d -i .B64env > .env
+            base64 -d -i .B64env > .env.production
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMG }}:latest
             docker stop ${{ secrets.DOCKER_CONTAINER }} || true
             docker rm ${{ secrets.DOCKER_CONTAINER }} || true
-            docker run -d -p 3008:3000 --env-file .env --name ${{ secrets.DOCKER_CONTAINER }} ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMG }}:latest
+            docker run -d -p 3008:3000 --env-file .env.production --name ${{ secrets.DOCKER_CONTAINER }} ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMG }}:latest
             sudo systemctl restart nginx
