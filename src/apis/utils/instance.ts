@@ -4,8 +4,6 @@ const BASE_URL: string = process.env.NEXT_PUBLIC_API_URL || "";
 
 function axiosAPI(url: string, options?: any) {
     const instance = axios.create({ baseURL: url, ...options });
-    console.log("api url"); //for test
-    console.log(url); //for test
     interceptors(instance);
     return instance;
 }
