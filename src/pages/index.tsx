@@ -141,6 +141,22 @@ const ArticleComponent = ({ title, thumbnail, displayLink, sitename, link, date 
     if (newWindow) newWindow.opener = null;
   };
 
+  function handleLinkThumbnail(link: string, thumbnail: string | null): string {
+    const isCareerly = /^https?:\/\/careerly.co.kr\//.test(link);
+    const isMedium = /^https?:\/\/medium.com\//.test(link);
+    const isImage = (thumbnail === null) || (thumbnail === "");
+  
+    if (isCareerly) {
+      return "/siteThumbnailImg/커리어리.png";
+    } else if (isMedium && isImage) {
+      return "/siteThumbnailImg/미디움.png";
+    } else if (isImage) {
+      return "/siteThumbnailImg/기타.png";
+    } else {
+      return thumbnail;
+    }
+  }
+
   function getFaviconUrl(url: string): string {
     const urlPattern = /:\/\/([^/]+)/;
     const match = url.match(urlPattern);
@@ -152,12 +168,6 @@ const ArticleComponent = ({ title, thumbnail, displayLink, sitename, link, date 
         : `http://www.google.com/s2/favicons?domain=${url}`;
   }
 
-  const modifyUrl = (url: string): string => {
-    return url.endsWith('/')
-      ? `${url}favicon.ico`
-      : `${url}/favicon.ico`;
-  };
-
   return (
     mounted && (
       <div className="flex flex-col items-start gap-[0.5rem] max-w-[14.25rem] cursor-pointer group/article">
@@ -166,7 +176,7 @@ const ArticleComponent = ({ title, thumbnail, displayLink, sitename, link, date 
             width={228}
             height={228}
             alt={title}
-            src={thumbnail || ''}
+            src={handleLinkThumbnail(link, thumbnail)}
             onClick={() => openInNewTab(link)}
             className="img"
           />
