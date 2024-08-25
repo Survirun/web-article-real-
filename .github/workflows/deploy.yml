@@ -1,0 +1,46 @@
+name: Docker Deploy
+
+on:
+  push:
+    branches: [ "release" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMG }}:latest
+          file: ./Dockerfile
+          build-args: |
+            "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}"
+            "NEXT_PUBLIC_CHANNELTALK_KEY=${{ secrets.NEXT_PUBLIC_CHANNELTALK_KEY }}"
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH and deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            echo "${{ secrets.ENV_B64 }}" > .B64env
+            base64 -d -i .B64env > .env.production
+            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMG }}:latest
+            docker stop ${{ secrets.DOCKER_CONTAINER }} || true
+            docker rm ${{ secrets.DOCKER_CONTAINER }} || true
+            docker run -d -p 3008:3000 --env-file .env.production --name ${{ secrets.DOCKER_CONTAINER }} ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMG }}:latest
+            sudo systemctl restart nginx
