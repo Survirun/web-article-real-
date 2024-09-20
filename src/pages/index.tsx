@@ -15,23 +15,35 @@ import Image from "next/image";
 import useSWR from 'swr';
 import { getArticleKeyword, ArticleResponse, Article as ArticleInterfaces, Passed } from "@/apis/api";
 
+const datas = [
+  { name: "개발 공통", id: 12 },
+  { name: "IT 뉴스", id: 10 },
+  { name: "Android", id: 3 },
+  { name: "IOS", id: 9 },
+  { name: "Web", id: 4 },
+  { name: "BackEnd", id: 5 },
+  { name: "AI", id: 6 },
+  { name: "UI/UX ", id: 7 },
+  { name: "기획", id: 8 },
+];
+
 const IntroComponent = () => {
   return (
     <div className="w-full bg-black flex justify-center">
       <div className="max-w-contentW flex justify-between items-center flex-shrink-0 h-[30rem] bg-black">
         <div className="flex flex-col justify-center gap-[0.5rem]">
           <h2 className="text-gray-100 text-5xl font-semibold leading-[4.5rem] w-[30rem]">
-            브랜딩을 반영한
+            개발자들을 위한
             <br />
-            두줄 짜리 문구
+            아티클 큐레이션
           </h2>
-          <p className="text-gray-400 font-medium text-base">
+          {/* <p className="text-gray-400 font-medium text-base">
             여기는 한 3줄짜리면 괜찮을 것 같은데
             <br />
             어떻게 써야 할 지 모르곘으니까
             <br />
             일단 이렇게라도 채워두자
-          </p>
+          </p> */}
         </div>
         <Image alt="메인 페이지 이미지" width={400} height={400} src={"/heroSectionGraphics/main_sprout.webp"}/>
       </div>
@@ -41,17 +53,6 @@ const IntroComponent = () => {
 
 const KeyWardHeader = ({articleState}: { articleState: ArticleState }) => {
   const { activeTab, setActiveTab, resetPage, resetAllArticles } = articleState;
-
-  const datas = [
-    { name: "전체", id: 0 },
-    { name: "IT 소식 ", id: 2 },
-    { name: "Android", id: 3 },
-    { name: "Web", id: 4 },
-    { name: "BackEnd", id: 5 },
-    { name: "AI", id: 6 },
-    { name: "UI/UX ", id: 7 },
-    { name: "기획", id: 8 },
-  ];
 
   const Button: React.FC<{
     className: string;
@@ -157,9 +158,15 @@ const ArticleComponent = ({ title, thumbnail, displayLink, sitename, link, date 
     }
   }
 
-  function getFaviconUrl(url: string): string {
+  function getFaviconUrl(url: string, displayLink?: string): string {
+    
     const urlPattern = /:\/\/([^/]+)/;
     const match = url.match(urlPattern);
+    console.log(match && match[1] === "surfit.io")
+
+    if(match && match[1] === "surfit.io") {
+      return `http://www.google.com/s2/favicons?domain=${displayLink}`
+    }
 
     const targetDomains = ["d2.naver.com", "developer.android.com"];
 
@@ -188,7 +195,7 @@ const ArticleComponent = ({ title, thumbnail, displayLink, sitename, link, date 
         </p>
         <div className="w-full flex flex-row justify-between items-center gap-[0.5rem]">
           <div className="flex items-center gap-[0.25rem]">
-            <img alt="아이콘" width={16} height={16} className="w-4 h-4 rounded-full bg-[#EEEEF0]" src={getFaviconUrl(link)}/>
+            <img alt="아이콘" width={16} height={16} className="w-4 h-4 rounded-full bg-[#EEEEF0]" src={getFaviconUrl(link, displayLink)}/>
             <p className="text-[#84848F] text-sm font-medium leading-normal">{sitename}</p>
           </div>
           <p className="text-[#A0A0AB] text-sm font-medium leading-normal">{date}</p>
@@ -318,7 +325,7 @@ interface ArticleState {
 }
 
 const useArticleState = (): ArticleState => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(datas[0].id);
   const [page, setPage] = useState(1);
   const [allArticles, setAllArticles] = useState<ArticleInterfaces[]>([]);
 
