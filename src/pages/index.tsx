@@ -43,9 +43,10 @@ const KeyWardHeader = ({articleState}: { articleState: ArticleState }) => {
   const { activeTab, setActiveTab, resetPage, resetAllArticles } = articleState;
 
   const datas = [
-    { name: "개발 공통", id: 0 },
-    { name: "IT 소식 ", id: 2 },
+    { name: "개발 공통", id: 12 },
+    { name: "IT 뉴스", id: 10 },
     { name: "Android", id: 3 },
+    { name: "IOS", id: 9 },
     { name: "Web", id: 4 },
     { name: "BackEnd", id: 5 },
     { name: "AI", id: 6 },
