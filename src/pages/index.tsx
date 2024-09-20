@@ -15,6 +15,18 @@ import Image from "next/image";
 import useSWR from 'swr';
 import { getArticleKeyword, ArticleResponse, Article as ArticleInterfaces, Passed } from "@/apis/api";
 
+const datas = [
+  { name: "개발 공통", id: 12 },
+  { name: "IT 뉴스", id: 10 },
+  { name: "Android", id: 3 },
+  { name: "IOS", id: 9 },
+  { name: "Web", id: 4 },
+  { name: "BackEnd", id: 5 },
+  { name: "AI", id: 6 },
+  { name: "UI/UX ", id: 7 },
+  { name: "기획", id: 8 },
+];
+
 const IntroComponent = () => {
   return (
     <div className="w-full bg-black flex justify-center">
@@ -41,18 +53,6 @@ const IntroComponent = () => {
 
 const KeyWardHeader = ({articleState}: { articleState: ArticleState }) => {
   const { activeTab, setActiveTab, resetPage, resetAllArticles } = articleState;
-
-  const datas = [
-    { name: "개발 공통", id: 12 },
-    { name: "IT 뉴스", id: 10 },
-    { name: "Android", id: 3 },
-    { name: "IOS", id: 9 },
-    { name: "Web", id: 4 },
-    { name: "BackEnd", id: 5 },
-    { name: "AI", id: 6 },
-    { name: "UI/UX ", id: 7 },
-    { name: "기획", id: 8 },
-  ];
 
   const Button: React.FC<{
     className: string;
@@ -159,6 +159,8 @@ const ArticleComponent = ({ title, thumbnail, displayLink, sitename, link, date 
   }
 
   function getFaviconUrl(url: string): string {
+    console.log(url)
+
     const urlPattern = /:\/\/([^/]+)/;
     const match = url.match(urlPattern);
 
@@ -319,7 +321,7 @@ interface ArticleState {
 }
 
 const useArticleState = (): ArticleState => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(datas[0].id);
   const [page, setPage] = useState(1);
   const [allArticles, setAllArticles] = useState<ArticleInterfaces[]>([]);
 
