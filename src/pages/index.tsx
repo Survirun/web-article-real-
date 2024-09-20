@@ -158,11 +158,15 @@ const ArticleComponent = ({ title, thumbnail, displayLink, sitename, link, date 
     }
   }
 
-  function getFaviconUrl(url: string): string {
-    console.log(url)
-
+  function getFaviconUrl(url: string, displayLink?: string): string {
+    
     const urlPattern = /:\/\/([^/]+)/;
     const match = url.match(urlPattern);
+    console.log(match && match[1] === "surfit.io")
+
+    if(match && match[1] === "surfit.io") {
+      return `http://www.google.com/s2/favicons?domain=${displayLink}`
+    }
 
     const targetDomains = ["d2.naver.com", "developer.android.com"];
 
@@ -191,7 +195,7 @@ const ArticleComponent = ({ title, thumbnail, displayLink, sitename, link, date 
         </p>
         <div className="w-full flex flex-row justify-between items-center gap-[0.5rem]">
           <div className="flex items-center gap-[0.25rem]">
-            <img alt="아이콘" width={16} height={16} className="w-4 h-4 rounded-full bg-[#EEEEF0]" src={getFaviconUrl(link)}/>
+            <img alt="아이콘" width={16} height={16} className="w-4 h-4 rounded-full bg-[#EEEEF0]" src={getFaviconUrl(link, displayLink)}/>
             <p className="text-[#84848F] text-sm font-medium leading-normal">{sitename}</p>
           </div>
           <p className="text-[#A0A0AB] text-sm font-medium leading-normal">{date}</p>
