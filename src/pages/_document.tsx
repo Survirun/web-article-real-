@@ -2,7 +2,7 @@ import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {
   return (
-    <Html lang="en">
+    <Html lang="kr">
       <Head>
         <title>돌핀 - 맞춤형 IT 소식 서비스</title>
         <meta name="description" content="돌핀에서 최신 기사 및 IT 소식을 한 눈에 확인하세요. 웹, 안드로이드, AI 등의 다양한 주제들을 쉽게 탐색할 수 있습니다." />
