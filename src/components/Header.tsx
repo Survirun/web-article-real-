@@ -1,4 +1,4 @@
-import { IconButton, Logo, Typo } from "./index"
+import { Logo } from "./index"
 import { useRouter } from 'next/navigation'
 
 interface HeaderProps {
